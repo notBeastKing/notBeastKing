@@ -14,7 +14,7 @@ struct players
   int health;
   int mana;
 
-  int yes()
+  int info()
   {
     cout<<"name = "<<name<<endl;
     cout<<"health = "<<health<<endl; 
@@ -23,10 +23,9 @@ struct players
   }
 };
 
-int attack(int*);
-int defend(int*);
-int breserker(int*, int*, int* );
-int bot(int*, int*, int*, int*);
+int attack(int*, int*);
+int breserker(int*, int*, int*,int* );
+int bot(int*, int*, int*, int*, string);
 
 
 
@@ -36,6 +35,7 @@ int main()
   int b;
   string a;
   string k;
+  int i =0;
 
 cout<<"eneter your name:";
 cin>>a;
@@ -46,7 +46,7 @@ players player1;
 player1.name = a;
 player1.health = 10;
 player1.mana = 100;
-player1.yes();
+player1.info();
 
 players bots;
 bots.name = "bot";
@@ -68,9 +68,7 @@ cout<<"\n";
 
   cout<<"\n";
   
-  cout<<"you have only 10 round good luck"<<endl;
-  sleep_for(500ms);
-
+  
   cout<<"\n";
 
 cout<<"games begins in"<<endl;
@@ -81,7 +79,7 @@ cout<<"games begins in"<<endl;
     sleep_for(1s);
   }
 
-  for(int j =1 ;j<11 ;j++)
+ while(i<10)
   {
     srand(time(0));
     b = (rand()%3);
@@ -90,8 +88,8 @@ cout<<"games begins in"<<endl;
 
     if(k == "attack")
     {
-      attack(&bots.health);
-      bot(&b, &bots.mana, &player1.health, &bots.health);
+      attack(&bots.health, &b);
+      bot(&b, &bots.mana, &player1.health, &bots.health,k);
       cout<<"your health is : "<<player1.health<<endl;
       cout<<"bot's heatlh is : "<<bots.health<<endl;
     }
@@ -99,8 +97,6 @@ cout<<"games begins in"<<endl;
     {
       if(k=="defend")
       {
-          defend(&player1.health);\
-          bot(&b, &bots.mana, &player1.health, &bots.health);
           cout<<"your health is : "<<player1.health<<endl;
           cout<<"bot's heatlh is : "<<bots.health<<endl;
       }    
@@ -108,8 +104,8 @@ cout<<"games begins in"<<endl;
       {
        if(k == "breserker")
        {
-            breserker(&player1.mana, &player1.health, &bots.health);
-              bot(&b, &bots.mana, &player1.health, &bots.health);
+            breserker(&player1.mana, &player1.health, &bots.health, &b);
+              bot(&b, &bots.mana, &player1.health, &bots.health,k);
               cout<<"your health is : "<<player1.health<<endl;
               cout<<"bot's heatlh is : "<<bots.health<<endl; 
        }
@@ -138,21 +134,23 @@ return 0;
 }
 
 
-int attack(int* h2)
+int attack(int* h2, int*l)
 {
+  if(*l == 1 || *l == 3)
+  {
   *h2 = *h2 - 2;
-  
+  }
+  else
+  {
+    if(*l == 2)
+    {
+      *h2 = *h2;
+    }
+  }
   return 0;
 }
 
-int defend(int* h1)
-{
-  
-  
-  return 0;
-}
-
-int breserker(int* M, int* h1, int* h2 )
+int breserker(int* M, int* h1, int* h2, int*p )
 {
   if(*M==100)
   {
@@ -161,27 +159,38 @@ int breserker(int* M, int* h1, int* h2 )
     *M = *M -100;
     cout<<"your mana = "<<*M<<endl;
   }
-   else{
+  else
+  {
+    if(*p == 2)
+    {
+      *h2 = *h2;
+    }
+      else
+       {
      cout<<"you can't use breserker this round"<<endl;
-   }
+       }
+  }
+
    return 0;
 }
 
-int bot(int*p, int*M, int*h1, int*h2)
+int bot(int*p, int*M, int*h1, int*h2, string z)
 {
   if(*p == 1)
   {
     *h1 = *h1 - 2;
- 
   }
   else
-  {
-    if(*p = 2)
+  { 
+     if(z == "defend" && *p == 1)
     {
-      *h2 = *h2;
+    *h1 = *h1;
     }
-    else 
-    {
+  
+  
+    
+      else
+      {
        if(*p == 3)
       {
         *h2 = *h2 - 1;
@@ -192,16 +201,24 @@ int bot(int*p, int*M, int*h1, int*h2)
        else
        {
          if(*M<=0)
-         {
+         
            {
             cout<<"bot tried to use breserker with 0 mana"<<endl;
            }
-         }
-
+           else
+           {
+             if(*p==3 && z=="defend")
+             {
+               *h1 = *h1;
+             }
+           }
        }
+      }
+
+    
        
-    }
-  }
+  }  
+  
   return 0;
 }
 
